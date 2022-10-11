@@ -2,10 +2,13 @@ import { Module } from '@nestjs/common';
 import { TasksModule } from './tasks/tasks.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ProductsModule } from './products/products.module';
 
 @Module({
   imports: [
     TasksModule,
+    MongooseModule.forRoot('mongodb://localhost:27017/bookstore'),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -17,6 +20,7 @@ import { AuthModule } from './auth/auth.module';
       synchronize: true,
     }),
     AuthModule,
+    ProductsModule
   ],
 })
 export class AppModule {}
