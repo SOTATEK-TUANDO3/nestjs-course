@@ -3,6 +3,8 @@ import { AuthModule } from './auth/auth.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProductsModule } from './products/products.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { Auth2Module } from './auth2/auth2.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -20,7 +22,9 @@ import { ScheduleModule } from '@nestjs/schedule';
     // }),
     // AuthModule,
     ProductsModule,
-    ScheduleModule.forRoot()
+    ScheduleModule.forRoot(),
+    Auth2Module,
+    UsersModule
   ],
 })
 export class AppModule {}
