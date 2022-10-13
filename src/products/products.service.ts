@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { Model } from 'mongoose';
 import { CreateProductDto } from './dto/create-product.dto';
+import { GetProductsFilterDto } from './dto/get-products-filter.dto';
 import { Product, ProductDocument } from './product.schema';
 
 @Injectable()
@@ -11,8 +12,23 @@ export class ProductsService {
     @InjectModel(Product.name) private productModel: Model<ProductDocument>,
   ) {}
 
-  async getProducts(): Promise<Product[]> {
-    return await this.productModel.find();
+  async getProducts(
+    filterProductsDto: GetProductsFilterDto,
+  ): Promise<Product[]> {
+    const { search, category } = filterProductsDto;
+    let query: any = {};
+
+    if (category) {
+      query.category = category.toLowerCase();
+    }
+
+    if (search) {
+      query['$or'] = [
+        { name: { $regex: search.toLocaleLowerCase() } },
+        { des: { $regex: search.toLocaleLowerCase() } },
+      ];
+    }
+    return await this.productModel.find(query);
   }
 
   async getProductById(id: string): Promise<Product> {

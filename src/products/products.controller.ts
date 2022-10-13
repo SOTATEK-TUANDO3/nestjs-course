@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Param, Patch, Post, UseGuards, Request } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UseGuards, Request, Query } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth2/jwt-auth.guard';
 import { CreateProductDto } from './dto/create-product.dto';
+import { GetProductsFilterDto } from './dto/get-products-filter.dto';
 import { ProductsService } from './products.service';
 
 @Controller('products')
@@ -9,8 +10,9 @@ export class ProductsController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  getProducts(@Request() req) {
-    return this.productService.getProducts();
+  getProducts(@Request() req, @Query() filterProductsDto: GetProductsFilterDto) {
+    console.log(req.user)
+    return this.productService.getProducts(filterProductsDto);
   }
 
   @Get(':id')
