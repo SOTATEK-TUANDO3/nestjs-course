@@ -7,7 +7,9 @@ import {
   Get,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiQuery } from '@nestjs/swagger';
 import { Auth2Service } from './auth2.service';
+import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { CreateUserDto } from './dto/createUser.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
@@ -16,14 +18,16 @@ export class Auth2Controller {
   constructor(private auth2Service: Auth2Service) {}
 
   @Post('/signin')
-  signIn(@Body() signInDto: any) {
-    this.auth2Service.signIn(signInDto);
+  @UseGuards(AuthGuard('local'))
+  signIn(@Request() req) {
+    return this.auth2Service.login(req.user);
   }
 
   @Post('/signin1')
-  @UseGuards(AuthGuard('local'))
-  login(@Request() req) {
-    return this.auth2Service.login(req.user);
+  @ApiQuery({ name: 'username', type: String })
+  @ApiQuery({ name: 'password', type: String })
+  login(@Body() signInDto: AuthCredentialsDto) {
+    return this.auth2Service.login(signInDto);
   }
 
   @Post('/signup')
